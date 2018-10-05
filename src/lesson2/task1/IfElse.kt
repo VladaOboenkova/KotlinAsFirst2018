@@ -1,9 +1,12 @@
 @file:Suppress("UNUSED_PARAMETER")
+
 package lesson2.task1
 
 import lesson1.task1.discriminant
 import kotlin.math.max
 import kotlin.math.sqrt
+import lesson1.task1.sqr
+import kotlin.math.abs
 
 /**
  * Пример
@@ -62,7 +65,15 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * Мой возраст. Для заданного 0 < n < 200, рассматриваемого как возраст человека,
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
-fun ageDescription(age: Int): String = TODO()
+fun ageDescription(age: Int): String =
+
+        when {
+            age in 11..14 || age in 111..114 -> "$age лет"
+            age % 10 == 1 -> "$age год"
+            age % 10 in 2..4 -> "$age года"
+            else -> "$age лет"
+        }
+
 
 /**
  * Простая
@@ -71,9 +82,18 @@ fun ageDescription(age: Int): String = TODO()
  * и t3 часов — со скоростью v3 км/час.
  * Определить, за какое время он одолел первую половину пути?
  */
-fun timeForHalfWay(t1: Double, v1: Double,
-                   t2: Double, v2: Double,
-                   t3: Double, v3: Double): Double = TODO()
+fun timeForHalfWay(t1: Double, v1: Double, t2: Double, v2: Double, t3: Double, v3: Double): Double {
+    val s = (t1 * v1) + (t2 * v2) + (t3 * v3)
+    return when {
+        ((s / 2) < (t1 * v1)) -> ((s / 2) / v1)
+        ((s / 2) == (t1 * v1)) -> t1
+        ((s / 2) > (t1 * v1) && (s / 2) < ((t2 * v2) + (t1 * v1))) -> (((s / 2) - (t1 * v1)) / v2) + t1
+        ((s / 2) == ((v2 * t2) + (v1 * t1))) -> (t1 + t2)
+        ((s / 2) > ((t1 * v1) + (t2 * v2)) && (s / 2) < s) ->
+            (((s / 2) - (t1 * v1) - (t2 * v2)) / v3) + t1 + t2
+        else -> -1.0
+    }
+}
 
 /**
  * Простая
@@ -86,7 +106,13 @@ fun timeForHalfWay(t1: Double, v1: Double,
  */
 fun whichRookThreatens(kingX: Int, kingY: Int,
                        rookX1: Int, rookY1: Int,
-                       rookX2: Int, rookY2: Int): Int = TODO()
+                       rookX2: Int, rookY2: Int): Int =
+        when {
+            ((kingX == rookX1) && (kingY == rookY2)) || ((kingX == rookX2) && (kingY == rookY1)) -> 3
+            (kingX == rookX1) || (kingY == rookY1) -> 1
+            (kingX == rookX2) || (kingY == rookY2) -> 2
+            else -> 0
+        }
 
 /**
  * Простая
@@ -100,7 +126,13 @@ fun whichRookThreatens(kingX: Int, kingY: Int,
  */
 fun rookOrBishopThreatens(kingX: Int, kingY: Int,
                           rookX: Int, rookY: Int,
-                          bishopX: Int, bishopY: Int): Int = TODO()
+                          bishopX: Int, bishopY: Int): Int =
+        when {
+            ((kingX == rookX) || (kingY == rookY)) && ((abs(bishopX - kingX)) == abs(bishopY - kingY)) -> 3
+            (kingX == rookX) || (kingY == rookY) -> 1
+            (kingX != rookX) && (kingY != rookY) && ((abs(bishopX - kingX)) == abs(bishopY - kingY)) -> 2
+            else -> 0
+        }
 
 /**
  * Простая
@@ -110,7 +142,14 @@ fun rookOrBishopThreatens(kingX: Int, kingY: Int,
  * прямоугольным (вернуть 1) или тупоугольным (вернуть 2).
  * Если такой треугольник не существует, вернуть -1.
  */
-fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
+fun triangleKind(a: Double, b: Double, c: Double): Int =
+        when {
+            (a + b) < c || (a + c) < b || (b + c) < a -> -1
+            (sqr(a) + sqr(b) < sqr(c)) || (sqr(b) + sqr(c) < sqr(a)) || (sqr(a) + sqr(c) < sqr(b)) -> 2
+            (sqr(a) + sqr(b) == sqr(c)) || (sqr(b) + sqr(c) == sqr(a)) || (sqr(a) + sqr(c) == sqr(b)) -> 1
+            (sqr(a) + sqr(b) > sqr(c)) || (sqr(b) + sqr(c) > sqr(a)) || (sqr(a) + sqr(c) > sqr(b)) -> 0
+            else -> 5
+        }
 
 /**
  * Средняя
@@ -120,4 +159,16 @@ fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
  * Найти длину пересечения отрезков AB и CD.
  * Если пересечения нет, вернуть -1.
  */
-fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int = TODO()
+fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int =
+        when {
+            (a < c) && (c < b) && (b < d) -> (b - c)
+            (c < a) && (a < d) && (d < b) -> (d - a)
+            (a < c) && (c < d) && (d < b) -> (d - c)
+            (c < a) && (a < b) && (b < d) -> (b - a)
+            (a < b) && (b == c) && (b < d) -> 0
+            (c < d) && (d == a) && (a < b) -> 0
+            (c == a) && (b == d) -> (b - a)
+            (a <= b) && (b < c) && (c <= d) -> -1
+            (c <= d) && (d < a) && (a <= b) -> -1
+            else -> -1
+        }
