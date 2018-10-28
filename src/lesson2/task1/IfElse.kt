@@ -83,15 +83,11 @@ fun ageDescription(age: Int): String =
  * Определить, за какое время он одолел первую половину пути?
  */
 fun timeForHalfWay(t1: Double, v1: Double, t2: Double, v2: Double, t3: Double, v3: Double): Double {
-    val s = (t1 * v1) + (t2 * v2) + (t3 * v3)
+    val s = (t1 * v1 + t2 * v2 + t3 * v3) / 2
     return when {
-        ((s / 2) < (t1 * v1)) -> ((s / 2) / v1)
-        ((s / 2) == (t1 * v1)) -> t1
-        ((s / 2) > (t1 * v1) && (s / 2) < ((t2 * v2) + (t1 * v1))) -> (((s / 2) - (t1 * v1)) / v2) + t1
-        ((s / 2) == ((v2 * t2) + (v1 * t1))) -> (t1 + t2)
-        ((s / 2) > ((t1 * v1) + (t2 * v2)) && (s / 2) < s) ->
-            (((s / 2) - (t1 * v1) - (t2 * v2)) / v3) + t1 + t2
-        else -> -1.0
+        s <= t1 * v1 -> s / v1
+        (s > t1 * v1) && (s <= (t2 * v2 + t1 * v1)) -> (s - t1 * v1) / v2 + t1
+        else -> (s - t1 * v1 - t2 * v2) / v3 + t1 + t2
     }
 }
 
@@ -106,13 +102,18 @@ fun timeForHalfWay(t1: Double, v1: Double, t2: Double, v2: Double, t3: Double, v
  */
 fun whichRookThreatens(kingX: Int, kingY: Int,
                        rookX1: Int, rookY1: Int,
-                       rookX2: Int, rookY2: Int): Int =
-        when {
-            ((kingX == rookX1) && (kingY == rookY2)) || ((kingX == rookX2) && (kingY == rookY1)) -> 3
-            (kingX == rookX1) || (kingY == rookY1) -> 1
-            (kingX == rookX2) || (kingY == rookY2) -> 2
-            else -> 0
-        }
+                       rookX2: Int, rookY2: Int): Int {
+    val a = (kingX == rookX1)
+    val b = (kingX == rookX2)
+    val c = (kingY == rookY1)
+    val d = (kingY == rookY2)
+    return when {
+        (a && d) || (b && c) -> 3
+        a || c -> 1
+        b || d -> 2
+        else -> 0
+    }
+}
 
 /**
  * Простая
@@ -126,13 +127,18 @@ fun whichRookThreatens(kingX: Int, kingY: Int,
  */
 fun rookOrBishopThreatens(kingX: Int, kingY: Int,
                           rookX: Int, rookY: Int,
-                          bishopX: Int, bishopY: Int): Int =
-        when {
-            ((kingX == rookX) || (kingY == rookY)) && ((abs(bishopX - kingX)) == abs(bishopY - kingY)) -> 3
-            (kingX == rookX) || (kingY == rookY) -> 1
-            (kingX != rookX) && (kingY != rookY) && ((abs(bishopX - kingX)) == abs(bishopY - kingY)) -> 2
-            else -> 0
-        }
+                          bishopX: Int, bishopY: Int): Int {
+    val a = (kingX == rookX)
+    val b = (kingY == rookY)
+    val c = (bishopX - kingX)
+    val d = (bishopY - kingY)
+    return when {
+        (a || b) && (abs(c) == abs(d)) -> 3
+        a || b -> 1
+        !a && !b && (abs(c) == abs(d)) -> 2
+        else -> 0
+    }
+}
 
 /**
  * Простая
@@ -147,8 +153,7 @@ fun triangleKind(a: Double, b: Double, c: Double): Int =
             (a + b) < c || (a + c) < b || (b + c) < a -> -1
             (sqr(a) + sqr(b) < sqr(c)) || (sqr(b) + sqr(c) < sqr(a)) || (sqr(a) + sqr(c) < sqr(b)) -> 2
             (sqr(a) + sqr(b) == sqr(c)) || (sqr(b) + sqr(c) == sqr(a)) || (sqr(a) + sqr(c) == sqr(b)) -> 1
-            (sqr(a) + sqr(b) > sqr(c)) || (sqr(b) + sqr(c) > sqr(a)) || (sqr(a) + sqr(c) > sqr(b)) -> 0
-            else -> 5
+            else -> 0
         }
 
 /**
@@ -161,14 +166,11 @@ fun triangleKind(a: Double, b: Double, c: Double): Int =
  */
 fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int =
         when {
-            (a < c) && (c < b) && (b < d) -> (b - c)
-            (c < a) && (a < d) && (d < b) -> (d - a)
-            (a < c) && (c < d) && (d < b) -> (d - c)
-            (c < a) && (a < b) && (b < d) -> (b - a)
-            (a < b) && (b == c) && (b < d) -> 0
-            (c < d) && (d == a) && (a < b) -> 0
-            (c == a) && (b == d) -> (b - a)
-            (a <= b) && (b < c) && (c <= d) -> -1
-            (c <= d) && (d < a) && (a <= b) -> -1
+            (a <= c) && (c < b) && (b <= d) -> (b - c)
+            (c <= a) && (a < d) && (d <= b) -> (d - a)
+            (a <= c) && (d <= b) -> (d - c)
+            (c <= a) && (b <= d) -> (b - a)
+            (b == c) -> 0
+            (a == d) -> 0
             else -> -1
         }

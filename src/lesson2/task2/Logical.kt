@@ -21,7 +21,7 @@ fun pointInsideCircle(x: Double, y: Double, x0: Double, y0: Double, r: Double) =
  * Определить, счастливое ли заданное число, вернуть true, если это так.
  */
 fun isNumberHappy(number: Int): Boolean =
-        (((number / 1000) + ((number % 1000) / 100))) == ((number % 10) + ((number % 100) / 10))
+        (number / 1000 + (number % 1000) / 100) == (number % 10 + (number % 100) / 10)
 
 
 /**
@@ -49,7 +49,7 @@ fun daysInMonth(month: Int, year: Int): Int {
     return when (month) {
         1, 3, 5, 7, 8, 10, 12 -> 31
         4, 6, 9, 11 -> 30
-        else -> if (((year % 400 == 0) || ((year % 4 == 0) && (year % 100 != 0))) && (month == 2)) 29 else 28
+        else -> if ((year % 400 == 0) || ((year % 4 == 0) && (year % 100 != 0))) 29 else 28
     }
 
 }
@@ -76,7 +76,9 @@ fun circleInside(x1: Double, y1: Double, r1: Double,
  * Вернуть true, если кирпич пройдёт
  */
 fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean =
-        ((a * b) <= (r * s)) || ((b * c) <= (r * s)) || ((a * c) <= (r * s))
+        (a * b <= r * s) && ((a <= r && b <= s) || (a <= s && b <= r)) ||
+                (b * c <= r * s) && ((b <= s && c <= r) || (b <= r && c <= s)) ||
+                (a * c <= r * s) && ((a <= s && c <= r) || (a <= r && c <= s))
 
 
 
