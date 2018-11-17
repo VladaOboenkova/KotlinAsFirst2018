@@ -4,6 +4,7 @@ package lesson2.task2
 
 import lesson1.task1.sqr
 import kotlin.math.abs
+import kotlin.math.min
 import kotlin.math.sqrt
 
 /**
@@ -32,10 +33,7 @@ fun isNumberHappy(number: Int): Boolean =
  * Считать, что ферзи не могут загораживать друг друга.
  */
 fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean =
-
         (x1 == x2) || (y1 == y2) || (abs(x1 - x2) == abs(y1 - y2))
-
-
 
 
 /**
@@ -75,10 +73,7 @@ fun circleInside(x1: Double, y1: Double, r1: Double,
  * кирпич 4 х 4 х 4 пройдёт через отверстие 4 х 4.
  * Вернуть true, если кирпич пройдёт
  */
-fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean =
-        (a * b <= r * s) && ((a <= r && b <= s) || (a <= s && b <= r)) ||
-                (b * c <= r * s) && ((b <= s && c <= r) || (b <= r && c <= s)) ||
-                (a * c <= r * s) && ((a <= s && c <= r) || (a <= r && c <= s))
-
-
-
+fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean {
+    val m = minOf(a, b, c)
+    return m <= min(r, s)
+}

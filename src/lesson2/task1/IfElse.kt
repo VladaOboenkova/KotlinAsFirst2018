@@ -86,7 +86,7 @@ fun timeForHalfWay(t1: Double, v1: Double, t2: Double, v2: Double, t3: Double, v
     val s = (t1 * v1 + t2 * v2 + t3 * v3) / 2
     return when {
         s <= t1 * v1 -> s / v1
-        (s > t1 * v1) && (s <= (t2 * v2 + t1 * v1)) -> (s - t1 * v1) / v2 + t1
+        s <= t2 * v2 + t1 * v1 -> (s - t1 * v1) / v2 + t1
         else -> (s - t1 * v1 - t2 * v2) / v3 + t1 + t2
     }
 }
@@ -103,14 +103,12 @@ fun timeForHalfWay(t1: Double, v1: Double, t2: Double, v2: Double, t3: Double, v
 fun whichRookThreatens(kingX: Int, kingY: Int,
                        rookX1: Int, rookY1: Int,
                        rookX2: Int, rookY2: Int): Int {
-    val a = (kingX == rookX1)
-    val b = (kingX == rookX2)
-    val c = (kingY == rookY1)
-    val d = (kingY == rookY2)
+    val trRook1 = (kingX == rookX1) || (kingY == rookY1)
+    val trRook2 = (kingX == rookX2) || (kingY == rookY2)
     return when {
-        (a && d) || (b && c) -> 3
-        a || c -> 1
-        b || d -> 2
+        trRook1 && trRook2 -> 3
+        trRook1 -> 1
+        trRook2 -> 2
         else -> 0
     }
 }
@@ -128,14 +126,13 @@ fun whichRookThreatens(kingX: Int, kingY: Int,
 fun rookOrBishopThreatens(kingX: Int, kingY: Int,
                           rookX: Int, rookY: Int,
                           bishopX: Int, bishopY: Int): Int {
-    val a = (kingX == rookX)
-    val b = (kingY == rookY)
-    val c = (bishopX - kingX)
-    val d = (bishopY - kingY)
+    val trRook = (kingX == rookX) || (kingY == rookY)
+    val trBishopX = (bishopX - kingX)
+    val trBishopY = (bishopY - kingY)
     return when {
-        (a || b) && (abs(c) == abs(d)) -> 3
-        a || b -> 1
-        !a && !b && (abs(c) == abs(d)) -> 2
+        trRook && (abs(trBishopX) == abs(trBishopY)) -> 3
+        trRook -> 1
+        !trRook && (abs(trBishopX) == abs(trBishopY)) -> 2
         else -> 0
     }
 }
@@ -166,11 +163,9 @@ fun triangleKind(a: Double, b: Double, c: Double): Int =
  */
 fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int =
         when {
-            (a <= c) && (c < b) && (b <= d) -> (b - c)
-            (c <= a) && (a < d) && (d <= b) -> (d - a)
+            (a <= c) && (c <= b) && (b <= d) -> (b - c)
+            (c <= a) && (a <= d) && (d <= b) -> (d - a)
             (a <= c) && (d <= b) -> (d - c)
             (c <= a) && (b <= d) -> (b - a)
-            (b == c) -> 0
-            (a == d) -> 0
             else -> -1
         }

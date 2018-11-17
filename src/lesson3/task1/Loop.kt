@@ -7,6 +7,15 @@ import java.lang.Math.pow
 import kotlin.math.sqrt
 import kotlin.math.*
 
+fun nod(m: Int, n: Int): Int {
+    var number1 = m
+    var number2 = n
+    while (number1 != number2) {
+        if (number1 > number2) number1 -= number2 else number2 -= number1
+    }
+    return number1
+}
+
 /**
  * Пример
  *
@@ -76,7 +85,7 @@ fun digitNumber(n: Int): Int {
     do {
         number /= 10
         count++
-    } while (number > 0)
+    } while (abs(number) > 0)
     return count
 }
 
@@ -86,9 +95,18 @@ fun digitNumber(n: Int): Int {
  * Найти число Фибоначчи из ряда 1, 1, 2, 3, 5, 8, 13, 21, ... с номером n.
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
-fun fib(n: Int): Int =
-        if (n <= 2) 1 else
-            fib(n - 1) + fib(n - 2)
+fun fib(n: Int): Int {
+    var a = 1
+    var b = 1
+    var res = 0
+    if (n == 1 || n == 2) return 1
+    for (k in 3..n) {
+        res = a + b
+        b = a
+        a = res
+    }
+    return res
+}
 
 
 /**
@@ -98,13 +116,8 @@ fun fib(n: Int): Int =
  * минимальное число k, которое делится и на m и на n без остатка
  */
 fun lcm(m: Int, n: Int): Int {
-    var number1 = m
-    var number2 = n
-    var k = number1 * number2
-    while (number1 != number2) {
-        if (number1 > number2) number1 = number1 - number2 else number2 = number2 - number1
-    }
-    k /= number1
+    var k = m * n
+    k /= nod(m, n)
     return k
 }
 
@@ -114,11 +127,11 @@ fun lcm(m: Int, n: Int): Int {
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
 fun minDivisor(n: Int): Int {
-    var k = 3
-    if (n % 2 == 0) return 2 else
-        while (n % k != 0) {
-            k++
-        }
+    var k = 2
+    while (n % k != 0) {
+        if (isPrime(n)) return n
+        else k++
+    }
     return k
 }
 
@@ -129,10 +142,10 @@ fun minDivisor(n: Int): Int {
  */
 fun maxDivisor(n: Int): Int {
     var k = n / 2
-    if (n % 2 == 0) n / 2 else
-        while (n % k != 0) {
-            k -= 1
-        }
+    while (n % k != 0) {
+        if (isPrime(n)) return 1
+        k -= 1
+    }
     return k
 }
 
@@ -143,14 +156,7 @@ fun maxDivisor(n: Int): Int {
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean {
-    var number1 = m
-    var number2 = n
-    while (number1 != number2) {
-        if (number1 > number2) number1 -= number2 else number2 -= number1
-    }
-    return number1 == 1
-}
+fun isCoPrime(m: Int, n: Int): Boolean = nod(m, n) == 1
 
 /**
  * Простая
@@ -160,52 +166,37 @@ fun isCoPrime(m: Int, n: Int): Boolean {
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
 fun squareBetweenExists(m: Int, n: Int): Boolean {
-    var k = 0
-    var s = -1
-    while (sqr(k) <= n) {
-        if (sqr(k) >= m) {
-            k++
-            s++
-        } else {
-            while (sqr(k) < m) {
-                k++
-                if (sqr(k) >= m) {
-                    s++
-                }
-            }
-        }
+    val i = sqrt(m.toDouble())
+    val j = sqrt(n.toDouble())
+    for (k in i.toInt()..j.toInt()) {
+        if (sqr(k) in m..n) return true
     }
-    return s != 0
+    return false
 }
 
-@Suppress("UNREACHABLE_CODE", "UNUSED_CHANGED_VALUE")
-        /**
-         * Средняя
-         *
-         * Гипотеза Коллатца. Рекуррентная последовательность чисел задана следующим образом:
-         *
-         *   ЕСЛИ (X четное)
-         *     Xслед = X /2
-         *   ИНАЧЕ
-         *     Xслед = 3 * X + 1
-         *
-         * например
-         *   15 46 23 70 35 106 53 160 80 40 20 10 5 16 8 4 2 1 4 2 1 4 2 1 ...
-         * Данная последовательность рано или поздно встречает X == 1.
-         * Написать функцию, которая находит, сколько шагов требуется для
-         * этого для какого-либо начального X > 0.
-         */
+
+/**
+ * Средняя
+ *
+ * Гипотеза Коллатца. Рекуррентная последовательность чисел задана следующим образом:
+ *
+ *   ЕСЛИ (X четное)
+ *     Xслед = X /2
+ *   ИНАЧЕ
+ *     Xслед = 3 * X + 1
+ *
+ * например
+ *   15 46 23 70 35 106 53 160 80 40 20 10 5 16 8 4 2 1 4 2 1 4 2 1 ...
+ * Данная последовательность рано или поздно встречает X == 1.
+ * Написать функцию, которая находит, сколько шагов требуется для
+ * этого для какого-либо начального X > 0.
+ */
 fun collatzSteps(x: Int): Int {
     var k = 0
     var x1 = x
     while (x1 != 1) {
-        if (x1 % 2 == 0) {
-            k++
-            x1 = (x1 / 2)
-        } else {
-            k++
-            x1 = (3 * x1 + 1)
-        }
+        x1 = if (x1 % 2 == 0) (x1 / 2) else (3 * x1 + 1)
+        k++
     }
     return k
 }
@@ -218,13 +209,13 @@ fun collatzSteps(x: Int): Int {
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
 fun sin(x: Double, eps: Double): Double {
-
-    var y = x
     var row = 2.0
-    var i = 3.0
+    var i = 3
     var sign = 1
+    val omx = x % (2 * PI)
+    var y = omx
     while (abs(row) > eps) {
-        row = pow(x, i) / factorial(i.toInt()) * sign
+        row = pow(omx, i.toDouble()) / factorial(i) * sign
         y -= row
         i += 2
         sign *= -1
@@ -244,10 +235,11 @@ fun cos(x: Double, eps: Double): Double {
 
     var y = 1.0
     var row = 2.0
-    var i = 2.0
+    var i = 2
     var sign = 1
+    val omx = x % (2 * PI)
     while (abs(row) > eps) {
-        row = pow(x, i) / factorial(i.toInt()) * sign
+        row = pow(omx, i.toDouble()) / factorial(i) * sign
         y -= row
         i += 2
         sign *= -1
@@ -281,34 +273,24 @@ fun revert(n: Int): Int {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun isPalindrome(n: Int): Boolean {
-    var k = n
-    var t = 0
-    while (k > 0) {
-        t = t * 10 + k % 10
-        k /= 10
-    }
-    return n == t
-}
+fun isPalindrome(n: Int): Boolean = n == revert(n)
 
-@Suppress("UNREACHABLE_CODE")
-        /**
-         * Средняя
-         *
-         * Для заданного числа n определить, содержит ли оно различающиеся цифры.
-         * Например, 54 и 323 состоят из разных цифр, а 111 и 0 из одинаковых.
-         *
-         * Использовать операции со строками в этой задаче запрещается.
-         */
+/**
+ * Средняя
+ *
+ * Для заданного числа n определить, содержит ли оно различающиеся цифры.
+ * Например, 54 и 323 состоят из разных цифр, а 111 и 0 из одинаковых.
+ *
+ * Использовать операции со строками в этой задаче запрещается.
+ */
 fun hasDifferentDigits(n: Int): Boolean {
     var num = n
-    var a = num % 10
+    val a = num % 10
     if (num < 10) return false
     while (num != 0) {
-        num /= 10
         val b = num % 10
-        if (a != b && b != 0) return true
-        else a = b
+        num /= 10
+        if (a != b) return true
     }
     return false
 }
@@ -322,7 +304,15 @@ fun hasDifferentDigits(n: Int): Boolean {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun squareSequenceDigit(n: Int): Int = TODO()
+fun squareSequenceDigit(n: Int): Int {
+    var m = 0
+    var s = 0
+    while (s < n) {
+        m++
+        s += digitNumber(sqr(m))
+    }
+    return sqr(m) / pow(10.0, s - n.toDouble()).toInt() % 10
+}
 
 /**
  * Сложная
@@ -333,4 +323,13 @@ fun squareSequenceDigit(n: Int): Int = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun fibSequenceDigit(n: Int): Int = TODO()
+fun fibSequenceDigit(n: Int): Int {
+    var m = 0
+    var s = 0
+    while (s < n) {
+        m++
+        s += digitNumber(fib(m))
+    }
+    return fib(m) / pow(10.0, s - n.toDouble()).toInt() % 10
+}
+
