@@ -127,12 +127,11 @@ fun rookOrBishopThreatens(kingX: Int, kingY: Int,
                           rookX: Int, rookY: Int,
                           bishopX: Int, bishopY: Int): Int {
     val trRook = (kingX == rookX) || (kingY == rookY)
-    val trBishopX = (bishopX - kingX)
-    val trBishopY = (bishopY - kingY)
+    val trBishop = (abs(bishopX - kingX) == abs(bishopY - kingY))
     return when {
-        trRook && (abs(trBishopX) == abs(trBishopY)) -> 3
+        trRook && trBishop -> 3
         trRook -> 1
-        !trRook && (abs(trBishopX) == abs(trBishopY)) -> 2
+        trBishop -> 2
         else -> 0
     }
 }

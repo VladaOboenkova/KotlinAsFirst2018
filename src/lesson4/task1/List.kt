@@ -4,7 +4,6 @@ package lesson4.task1
 
 import lesson1.task1.discriminant
 import lesson1.task1.sqr
-import lesson3.task1.isPrime
 import java.lang.Math.pow
 import kotlin.math.sqrt
 
@@ -119,10 +118,8 @@ fun buildSumExample(list: List<Int>) = list.joinToString(separator = " + ", post
  * Модуль пустого вектора считать равным 0.0.
  */
 fun abs(v: List<Double>): Double {
-    if (v.isEmpty()) return 0.0
     var s = 0.0
-    for (i in 0 until v.size) {
-        val element = v[i]
+    for (element in v) {
         s += sqr(element)
     }
     return sqrt(s)
@@ -147,11 +144,8 @@ fun mean(list: List<Double>): Double {
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun center(list: MutableList<Double>): MutableList<Double> {
-    if (list.isEmpty()) return list
-    val r = (list.sum() / list.size)
-    for (i in 0 until list.size) {
-        list[i] -= r
-    }
+    val r = mean(list)
+    for (i in 0 until list.size) list[i] -= r
     return list
 }
 
@@ -171,21 +165,20 @@ fun times(a: List<Double>, b: List<Double>): Double {
     return c
 }
 
-@Suppress("NAME_SHADOWING")
-        /**
-         * Средняя
-         *
-         * Рассчитать значение многочлена при заданном x:
-         * p(x) = p0 + p1*x + p2*x^2 + p3*x^3 + ... + pN*x^N.
-         * Коэффициенты многочлена заданы списком p: (p0, p1, p2, p3, ..., pN).
-         * Значение пустого многочлена равно 0.0 при любом x.
-         */
+
+/**
+ * Средняя
+ *
+ * Рассчитать значение многочлена при заданном x:
+ * p(x) = p0 + p1*x + p2*x^2 + p3*x^3 + ... + pN*x^N.
+ * Коэффициенты многочлена заданы списком p: (p0, p1, p2, p3, ..., pN).
+ * Значение пустого многочлена равно 0.0 при любом x.
+ */
 fun polynom(p: List<Double>, x: Double): Double {
-    if (p.isEmpty()) return 0.0
-    var c = p[0]
-    var st = 1.0
-    for (i in 1 until p.size) {
-        c += p[i] * pow(x, st)
+    var c = 0.0
+    var st = 0.0
+    for (i in 0 until p.size) {
+        c += (p[i] * pow(x, st)).toInt()
         st++
     }
     return c
@@ -202,7 +195,6 @@ fun polynom(p: List<Double>, x: Double): Double {
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun accumulate(list: MutableList<Double>): MutableList<Double> {
-    if (list.isEmpty()) return list
     for (i in 1 until list.size) {
         list[i] += list[i - 1]
     }
@@ -219,15 +211,14 @@ fun accumulate(list: MutableList<Double>): MutableList<Double> {
 fun factorize(n: Int): List<Int> {
     var num = n
     val l = mutableListOf<Int>()
-    if (isPrime(num)) return listOf(num)
-    for (i in 2..num / 2) {
-        if (num % i == 0) {
-            l.add(i)
-            num /= i
-        }
+    while (num > 1) {
+        var i = 2
+        while (num % i > 0)
+            i++
+        l.add(i)
+        num /= i
     }
     return l
-
 }
 
 
@@ -249,75 +240,32 @@ fun factorizeToString(n: Int): String = TODO()
  */
 fun convert(n: Int, base: Int): List<Int> {
     var num = n
-    if (base > num) return listOf(num)
     val l = mutableListOf<Int>()
     while (num >= 1) {
         val c = num % base
         l.add(c)
         num /= base
     }
-    var s = l.size - 1
-    val k = mutableListOf<Int>()
-    for (i in 0 until l.size) {
-        k.add(l[s])
-        s--
-    }
-    return k
+    return l.reversed()
 }
 
-@Suppress("UNUSED_EXPRESSION", "UNREACHABLE_CODE")
-        /**
-         * Сложная
-         *
-         * Перевести заданное целое число n >= 0 в систему счисления с основанием 1 < base < 37.
-         * Результат перевода вернуть в виде строки, цифры более 9 представлять латинскими
-         * строчными буквами: 10 -> a, 11 -> b, 12 -> c и так далее.
-         * Например: n = 100, base = 4 -> 1210, n = 250, base = 14 -> 13c
-         */
+
+/**
+ * Сложная
+ *
+ * Перевести заданное целое число n >= 0 в систему счисления с основанием 1 < base < 37.
+ * Результат перевода вернуть в виде строки, цифры более 9 представлять латинскими
+ * строчными буквами: 10 -> a, 11 -> b, 12 -> c и так далее.
+ * Например: n = 100, base = 4 -> 1210, n = 250, base = 14 -> 13c
+ */
 fun convertToString(n: Int, base: Int): String {
-    var str = ""
-    var num = n
-    if (base > num) return num.toString()
-    while (num >= 1) {
-        var k = (num % base).toString()
-        when (k) {
-            "10" -> k = "a"
-            "11" -> k = "b"
-            "12" -> k = "c"
-            "13" -> k = "d"
-            "14" -> k = "e"
-            "15" -> k = "f"
-            "16" -> k = "g"
-            "17" -> k = "h"
-            "18" -> k = "i"
-            "19" -> k = "j"
-            "20" -> k = "k"
-            "21" -> k = "l"
-            "22" -> k = "m"
-            "23" -> k = "n"
-            "24" -> k = "o"
-            "25" -> k = "p"
-            "26" -> k = "q"
-            "27" -> k = "r"
-            "28" -> k = "s"
-            "29" -> k = "t"
-            "30" -> k = "u"
-            "31" -> k = "v"
-            "32" -> k = "w"
-            "33" -> k = "x"
-            "34" -> k = "y"
-            "35" -> k = "z"
-        }
-        str += k
-        num /= base
-    }
-    var m = str.length - 1
-    var str1 = ""
-    for (i in 0 until str.length) {
-        str1 += (str[m])
-        m--
-    }
-    return str1
+    val str = ""
+    val alp = "abcdefghijklmnopqrstuvwxyz"
+    val l = convert(n, base)
+    for (element in l)
+        if (element < 10) str + element.toString()
+        else str + alp[element - 10]
+    return str
 }
 
 /**

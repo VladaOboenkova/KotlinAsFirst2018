@@ -2,6 +2,8 @@
 
 package lesson5.task1
 
+import java.lang.Double.MAX_VALUE
+
 /**
  * Пример
  *
@@ -106,7 +108,16 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
  *   buildGrades(mapOf("Марат" to 3, "Семён" to 5, "Михаил" to 5))
  *     -> mapOf(5 to listOf("Семён", "Михаил"), 3 to listOf("Марат"))
  */
-fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> = TODO()
+fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
+    val rev = mutableMapOf<Int, List<String>>()
+    for ((name, grade) in grades) {
+        if (rev.containsKey(grade))
+            rev[grade] = rev[grade]!!.plus(name)
+        else rev += (grade to listOf(name))
+
+    }
+    return rev.toSortedMap(reverseOrder())
+}
 
 /**
  * Простая
@@ -118,7 +129,8 @@ fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> = TODO()
  *   containsIn(mapOf("a" to "z"), mapOf("a" to "z", "b" to "sweet")) -> true
  *   containsIn(mapOf("a" to "z"), mapOf("a" to "zee", "b" to "sweet")) -> false
  */
-fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean = TODO()
+fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean =
+        a.all { (key, value) -> (b[key] == value) }
 
 /**
  * Средняя
@@ -130,7 +142,18 @@ fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean = TODO()
  *   averageStockPrice(listOf("MSFT" to 100.0, "MSFT" to 200.0, "NFLX" to 40.0))
  *     -> mapOf("MSFT" to 150.0, "NFLX" to 40.0)
  */
-fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> = TODO()
+fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> {
+    val map = mutableMapOf<String, List<Double>>()
+    for ((stock, price) in stockPrices) {
+        if (map.containsKey(stock)) {
+            map[stock] = map[stock]!!.plus(price)
+        } else {
+            map += (stock to listOf(price))
+        }
+    }
+    return map.map { it.key to it.value.average() }.toMap()
+}
+
 
 /**
  * Средняя
@@ -147,7 +170,21 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  *     "печенье"
  *   ) -> "Мария"
  */
-fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? = TODO()
+fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
+    var lowestCost = MAX_VALUE
+    var lowestCostName = ""
+    for ((name, pair) in stuff) {
+        if (kind == pair.first && lowestCost > pair.second) {
+            lowestCost = pair.second
+            lowestCostName = name
+        }
+    }
+    return when (lowestCostName) {
+        "" -> null
+        else -> lowestCostName
+    }
+}
+
 
 /**
  * Сложная
@@ -189,14 +226,17 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   subtractOf(a = mutableMapOf("a" to "z"), mapOf("a" to "z"))
  *     -> a changes to mutableMapOf() aka becomes empty
  */
-fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>): Unit = TODO()
+fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>): Unit =
+        b.forEach { key, value -> a.remove(key, value) }
+
 
 /**
  * Простая
  *
  * Для двух списков людей найти людей, встречающихся в обоих списках
  */
-fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = TODO()
+fun whoAreInBoth(a: List<String>, b: List<String>): List<String> =
+        a.toSet().intersect(b).toList()
 
 /**
  * Средняя
@@ -207,7 +247,8 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = TODO()
  * Например:
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
-fun canBuildFrom(chars: List<Char>, word: String): Boolean = TODO()
+fun canBuildFrom(chars: List<Char>, word: String): Boolean =
+        chars.containsAll(word.toList())
 
 /**
  * Средняя
@@ -221,7 +262,15 @@ fun canBuildFrom(chars: List<Char>, word: String): Boolean = TODO()
  * Например:
  *   extractRepeats(listOf("a", "b", "a")) -> mapOf("a" to 2)
  */
-fun extractRepeats(list: List<String>): Map<String, Int> = TODO()
+fun extractRepeats(list: List<String>): Map<String, Int> {
+    val map = mutableMapOf<String, Int>()
+    for (element in list) {
+        if (map.containsKey(element))
+            map[element] = map[element]!! + 1
+        else map[element] = 1
+    }
+    return map.filterNot { it.value == 1 }
+}
 
 /**
  * Средняя

@@ -127,12 +127,10 @@ fun lcm(m: Int, n: Int): Int {
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
 fun minDivisor(n: Int): Int {
-    var k = 2
-    while (n % k != 0) {
-        if (isPrime(n)) return n
-        else k++
-    }
-    return k
+    if (n % 2 == 0) return 2
+    for (k in 3..sqrt(n.toDouble()).toInt() step 2)
+        if (n % k == 0) return k
+    return n
 }
 
 /**
@@ -141,12 +139,8 @@ fun minDivisor(n: Int): Int {
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
 fun maxDivisor(n: Int): Int {
-    var k = n / 2
-    while (n % k != 0) {
-        if (isPrime(n)) return 1
-        k -= 1
-    }
-    return k
+    val m = minDivisor(n)
+    return n / m
 }
 
 /**
@@ -209,7 +203,7 @@ fun collatzSteps(x: Int): Int {
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
 fun sin(x: Double, eps: Double): Double {
-    var row = 2.0
+    var row = 1.0
     var i = 3
     var sign = 1
     val omx = x % (2 * PI)
@@ -234,7 +228,7 @@ fun cos(x: Double, eps: Double): Double {
 
 
     var y = 1.0
-    var row = 2.0
+    var row = 1.0
     var i = 2
     var sign = 1
     val omx = x % (2 * PI)
