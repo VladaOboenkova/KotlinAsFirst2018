@@ -4,6 +4,7 @@ package lesson4.task1
 
 import lesson1.task1.discriminant
 import lesson1.task1.sqr
+import java.io.File.separator
 import java.lang.Math.pow
 import kotlin.math.sqrt
 
@@ -176,10 +177,8 @@ fun times(a: List<Double>, b: List<Double>): Double {
  */
 fun polynom(p: List<Double>, x: Double): Double {
     var c = 0.0
-    var st = 0.0
-    for (i in 0 until p.size) {
-        c += (p[i] * pow(x, st)).toInt()
-        st++
+    for ((index, element) in p.withIndex()) {
+        c += element * pow(x, index.toDouble())
     }
     return c
 }
@@ -210,9 +209,9 @@ fun accumulate(list: MutableList<Double>): MutableList<Double> {
  */
 fun factorize(n: Int): List<Int> {
     var num = n
+    var i = 2
     val l = mutableListOf<Int>()
-    while (num > 1) {
-        var i = 2
+    while (num >= i) {
         while (num % i > 0)
             i++
         l.add(i)
@@ -229,7 +228,7 @@ fun factorize(n: Int): List<Int> {
  * Результат разложения вернуть в виде строки, например 75 -> 3*5*5
  * Множители в результирующей строке должны располагаться по возрастанию.
  */
-fun factorizeToString(n: Int): String = TODO()
+fun factorizeToString(n: Int): String = factorize(n).joinToString(separator = "*")
 
 /**
  * Средняя
@@ -259,13 +258,13 @@ fun convert(n: Int, base: Int): List<Int> {
  * Например: n = 100, base = 4 -> 1210, n = 250, base = 14 -> 13c
  */
 fun convertToString(n: Int, base: Int): String {
-    val str = ""
+    val str = StringBuilder()
     val alp = "abcdefghijklmnopqrstuvwxyz"
     val l = convert(n, base)
     for (element in l)
-        if (element < 10) str + element.toString()
-        else str + alp[element - 10]
-    return str
+        if (element < 10) str.append(element.toString())
+        else str.append(alp[element - 10])
+    return str.toString()
 }
 
 /**
@@ -277,10 +276,8 @@ fun convertToString(n: Int, base: Int): String {
  */
 fun decimal(digits: List<Int>, base: Int): Int {
     var s = 0
-    var k = digits.size - 1
     for (i in 0 until digits.size) {
-        s += digits[i] * pow(base.toDouble(), k.toDouble()).toInt()
-        k--
+        s += digits[i] * pow(base.toDouble(), (digits.size - 1 - i).toDouble()).toInt()
     }
     return s
 }
@@ -294,7 +291,7 @@ fun decimal(digits: List<Int>, base: Int): Int {
  * 10 -> a, 11 -> b, 12 -> c и так далее.
  * Например: str = "13c", base = 14 -> 250
  */
-fun decimalFromString(str: String, base: Int): Int = TODO()
+fun decimalFromString(str: String, base: Int): Int = str.toInt(base)
 
 /**
  * Сложная

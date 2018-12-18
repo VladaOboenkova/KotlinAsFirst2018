@@ -3,6 +3,7 @@
 package lesson5.task1
 
 import java.lang.Double.MAX_VALUE
+import java.lang.Double.POSITIVE_INFINITY
 
 /**
  * Пример
@@ -114,9 +115,8 @@ fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
         if (rev.containsKey(grade))
             rev[grade] = rev[grade]!!.plus(name)
         else rev += (grade to listOf(name))
-
     }
-    return rev.toSortedMap(reverseOrder())
+    return rev
 }
 
 /**
@@ -151,7 +151,7 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
             map += (stock to listOf(price))
         }
     }
-    return map.map { it.key to it.value.average() }.toMap()
+    return map.mapValues { it.value.average() }.toMap()
 }
 
 
@@ -171,8 +171,8 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  *   ) -> "Мария"
  */
 fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
-    var lowestCost = MAX_VALUE
-    var lowestCostName = ""
+    var lowestCost = POSITIVE_INFINITY
+    var lowestCostName: String? = null
     for ((name, pair) in stuff) {
         if (kind == pair.first && lowestCost > pair.second) {
             lowestCost = pair.second
@@ -236,7 +236,7 @@ fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>): Unit =
  * Для двух списков людей найти людей, встречающихся в обоих списках
  */
 fun whoAreInBoth(a: List<String>, b: List<String>): List<String> =
-        a.toSet().intersect(b).toList()
+        a.intersect(b).toList()
 
 /**
  * Средняя
@@ -248,7 +248,7 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> =
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean =
-        chars.containsAll(word.toList())
+        chars.toSet().containsAll(word.toList())
 
 /**
  * Средняя

@@ -203,17 +203,16 @@ fun collatzSteps(x: Int): Int {
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
 fun sin(x: Double, eps: Double): Double {
-    var row = 1.0
     var i = 3
     var sign = 1
     val omx = x % (2 * PI)
     var y = omx
-    while (abs(row) > eps) {
-        row = pow(omx, i.toDouble()) / factorial(i) * sign
+    do {
+        val row = pow(omx, i.toDouble()) / factorial(i) * sign
         y -= row
         i += 2
         sign *= -1
-    }
+    } while (abs(row) > eps)
     return y
 }
 
@@ -225,19 +224,16 @@ fun sin(x: Double, eps: Double): Double {
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
 fun cos(x: Double, eps: Double): Double {
-
-
     var y = 1.0
-    var row = 1.0
     var i = 2
     var sign = 1
     val omx = x % (2 * PI)
-    while (abs(row) > eps) {
-        row = pow(omx, i.toDouble()) / factorial(i) * sign
+    do {
+        val row = pow(omx, i.toDouble()) / factorial(i) * sign
         y -= row
         i += 2
         sign *= -1
-    }
+    } while (abs(row) > eps)
     return y
 }
 
