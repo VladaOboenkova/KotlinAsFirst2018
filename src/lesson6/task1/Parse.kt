@@ -71,17 +71,19 @@ fun main(args: Array<String>) {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
+
+val month = listOf("января", "февраля", "марта", "апреля", "мая", "июня", "июля",
+        "августа", "сентября", "октября", "ноября", "декабря")
+
 fun dateStrToDigit(str: String): String {
     val date = str.split(' ')
-    val month = listOf("января", "февраля", "марта", "апреля", "мая", "июня", "июля",
-            "августа", "сентября", "октября", "ноября", "декабря")
     return try {
         val day = date[0].toInt()
         val monthName = date[1]
         val year = date[2].toInt()
-        if (date.size != 3) throw Exception()
-        if (monthName !in month) throw Exception()
-        if (day > daysInMonth(month.indexOf(monthName) + 1, year)) throw Exception()
+        if (date.size != 3) return ""
+        if (monthName !in month) return ""
+        if (day > daysInMonth(month.indexOf(monthName) + 1, year)) return ""
         String.format("%02d.%02d.%d", day, month.indexOf(monthName) + 1, year)
     } catch (e: Exception) {
         ""
@@ -100,15 +102,13 @@ fun dateStrToDigit(str: String): String {
  */
 fun dateDigitToStr(digital: String): String {
     val date = digital.split(".")
-    val month = listOf("января", "февраля", "марта", "апреля", "мая", "июня", "июля",
-            "августа", "сентября", "октября", "ноября", "декабря")
     return try {
         val day = date[0].toInt()
         val monthNumber = date[1].toInt()
         val year = date[2].toInt()
-        if (date.size != 3) throw Exception()
-        if (monthNumber !in 1..12) throw Exception()
-        if (day > daysInMonth(monthNumber, year)) throw Exception()
+        if (date.size != 3) return ""
+        if (monthNumber !in 1..12) return ""
+        if (day > daysInMonth(monthNumber, year)) return ""
         String.format("%d %s %d", day, month[monthNumber - 1], year)
     } catch (e: Exception) {
         ""
@@ -169,6 +169,7 @@ fun bestLongJump(jumps: String): Int {
 fun bestHighJump(jumps: String): Int {
     val results = jumps.split(" ")
     var maxHigh = -1
+    if (results.size % 2 == 1) return -1
     try {
         for (i in 0 until results.size step 2) {
             val attempt = results[i].toInt()
