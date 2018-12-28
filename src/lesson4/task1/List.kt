@@ -209,13 +209,17 @@ fun accumulate(list: MutableList<Double>): MutableList<Double> {
  */
 fun factorize(n: Int): List<Int> {
     var num = n
-    var i = 2
     val l = mutableListOf<Int>()
-    while (num >= i) {
+    var i = 2
+    while (i <= sqrt(num.toDouble()).toInt()) {
         while (num % i > 0)
             i++
         l.add(i)
         num /= i
+
+    }
+    if (sqrt(num.toDouble()).toInt() < i && num != 1) {
+        l.add(num)
     }
     return l
 }
@@ -276,8 +280,10 @@ fun convertToString(n: Int, base: Int): String {
  */
 fun decimal(digits: List<Int>, base: Int): Int {
     var s = 0
+    var st = pow(base.toDouble(), (digits.size - 1).toDouble()).toInt()
     for (i in 0 until digits.size) {
-        s += digits[i] * pow(base.toDouble(), (digits.size - 1 - i).toDouble()).toInt()
+        s += digits[i] * st
+        st /= base
     }
     return s
 }

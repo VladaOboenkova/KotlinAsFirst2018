@@ -110,11 +110,11 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
  *     -> mapOf(5 to listOf("Семён", "Михаил"), 3 to listOf("Марат"))
  */
 fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
-    val rev = mutableMapOf<Int, List<String>>()
+    val rev = mutableMapOf<Int, MutableList<String>>()
     for ((name, grade) in grades) {
-        if (rev.containsKey(grade))
-            rev[grade] = rev[grade]!!.plus(name)
-        else rev += (grade to listOf(name))
+        val g = rev[grade]
+        if (g == null) rev[grade] = mutableListOf(name)
+        else g += name
     }
     return rev
 }
@@ -143,15 +143,7 @@ fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean =
  *     -> mapOf("MSFT" to 150.0, "NFLX" to 40.0)
  */
 fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> {
-    val map = mutableMapOf<String, List<Double>>()
-    for ((stock, price) in stockPrices) {
-        if (map.containsKey(stock)) {
-            map[stock] = map[stock]!!.plus(price)
-        } else {
-            map += (stock to listOf(price))
-        }
-    }
-    return map.mapValues { it.value.average() }.toMap()
+    TODO()
 }
 
 
@@ -179,10 +171,7 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
             lowestCostName = name
         }
     }
-    return when (lowestCostName) {
-        "" -> null
-        else -> lowestCostName
-    }
+    return lowestCostName
 }
 
 
@@ -265,9 +254,9 @@ fun canBuildFrom(chars: List<Char>, word: String): Boolean =
 fun extractRepeats(list: List<String>): Map<String, Int> {
     val map = mutableMapOf<String, Int>()
     for (element in list) {
-        if (map.containsKey(element))
-            map[element] = map[element]!! + 1
-        else map[element] = 1
+        val e = map[element]
+        if (element !in map) map[element] = 1
+        else if (e != null) map[element] = e.plus(1)
     }
     return map.filterNot { it.value == 1 }
 }

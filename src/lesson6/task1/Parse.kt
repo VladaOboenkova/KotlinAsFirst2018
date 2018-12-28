@@ -146,7 +146,7 @@ fun bestLongJump(jumps: String): Int {
         for (i in 0 until results.size) {
             val attempt = results[i]
             when {
-                attempt.contains("-") || attempt.contains("%") -> -1
+                attempt == "-" || attempt == "%" -> -1
                 attempt.toInt() > maxLength -> maxLength = attempt.toInt()
             }
         }
@@ -176,7 +176,7 @@ fun bestHighJump(jumps: String): Int {
             val attemptSuccess = results[i + 1]
             when {
                 attemptSuccess.contains("%") || attemptSuccess.contains("-") -> -1
-                attemptSuccess.contains("+") && attempt > maxHigh -> maxHigh = attempt
+                attemptSuccess == "+" && attempt > maxHigh -> maxHigh = attempt
             }
         }
     } catch (e: Exception) {
